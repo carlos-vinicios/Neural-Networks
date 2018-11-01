@@ -38,7 +38,7 @@ model.fit_generator(train_batches, steps_per_epoch=4, validation_data=valid_batc
 
 predict = model.predict_generator(test_batches, steps=1, verbose=0)
 
-confusion = metrics.confusion_matrix(["melanoma", "normais"], np.round(predict[:,0]))
+confusion = metrics.confusion_matrix(test_labels, np.round(predict[:,0]))
 
 print(confusion)
 
