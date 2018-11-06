@@ -2,9 +2,15 @@ from keras.preprocessing.image import ImageDataGenerator,img_to_array, load_img
 import numpy as np
 import os
 
-laod_path = "train_base_unbalanced/valid/melanoma"
-save_path = "train_base_over/valid/melanoma"
+load_path_melanomas = "base/melanomas"
+load_path_normais = "base/normais"
 
+
+
+
+
+
+'''
 datagen = ImageDataGenerator(
 	shear_range=0.02,
 	rotation_range=180,
@@ -28,3 +34,4 @@ for filename1 in os.listdir(laod_path):
 		i += 1
 		if i > 3:
 			break 
+'''
