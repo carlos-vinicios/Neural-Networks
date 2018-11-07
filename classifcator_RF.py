@@ -27,10 +27,8 @@ for i in range(0, 5):
     modelo.fit(X_treino, Y_treino.ravel())
     rf_predict_train = modelo.predict(X_treino)
     rf_predict_test = modelo.predict(X_teste)
-
-    print(rf_predict_test)
     
-    '''confusion_matrix = metrics.confusion_matrix(Y_teste, rf_predict_test, labels = [1, 0])
+    confusion_matrix = metrics.confusion_matrix(Y_teste, rf_predict_test, labels = [1, 0])
     sensi = confusion_matrix[0][0] / len(X_teste)
     espec = confusion_matrix[1][1] / len(X_teste)
     accu_test = metrics.accuracy_score(Y_teste, rf_predict_test)
@@ -45,4 +43,4 @@ for i in range(0, 5):
     print("\n\n")
     print("Confusion Matrix")
     print("{0}".format(confusion_matrix))
-    print("\n\n")'''
+    print("\n\n")
