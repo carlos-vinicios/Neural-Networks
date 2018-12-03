@@ -15,9 +15,9 @@ img_normais = os.listdir(load_path_normais)
 base_size = 200
 base_size_m = 40
 base_size_n = 160
-train_split_size = 0.4
+train_split_size = 0.6
 test_split_size = 0.3
-valid_split_size = 0.3
+valid_split_size = 0.1
 
 base = "../bases/" + str(int(train_split_size * 100)) + "_" + str(int(valid_split_size * 100)) + "_" + str(int(test_split_size * 100))
 
