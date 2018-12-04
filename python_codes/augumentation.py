@@ -4,54 +4,71 @@ import random
 import shutil
 import os
 
+def randomSelec(base, pastas, qtd_splits, train_split_size, test_split_size, valid_split_size):
+	total_m = 0
+	total_n = 0
+	for split in range(0, qtd_splits):
+		path = base + "/split"+str(split+1)
+		os.mkdir(path)
+		#criando pastas
+		for pasta in pastas:
+			sub_path = path + pasta
+			os.mkdir(sub_path)
+			path_n = sub_path + "/normais" #criando pasta de normais
+			path_m = sub_path + "/melanomas" #criando pasta de melanomas
+			os.mkdir(path_m)
+			os.mkdir(path_n)
+			random.shuffle(img_melanomas)
+			random.shuffle(img_normais)
+			if pasta == '/train':
+				num_m = round(base_size_m * train_split_size)
+				num_n = round(base_size_n * train_split_size)
+				total_m+=num_m
+				total_n+=num_n
+			elif pasta == '/test':
+				num_m = round(base_size_m * test_split_size)
+				num_n = round(base_size_n * test_split_size)
+				total_m+=num_m
+				total_n+=num_n
+			elif pasta == '/valid':
+				num_m = round(base_size_m * valid_split_size)
+				num_n = round(base_size_n * valid_split_size)
+				total_m+=num_m
+				total_n+=num_n
+				num_m += base_size_m-total_m
+				num_n += base_size_n-total_n 
+			
+			#melanomas
+			for i in range(0, int(num_m)):
+				shutil.copy(load_path_melanomas + "/" + img_melanomas[i], path_m)
+			#normais
+			for i in range(0, int(num_n)):
+				shutil.copy(load_path_normais + "/" + img_normais[i], path_n)
+
+#def kFold(base, pastas):
+
+
+
 pastas = ["/test", "/train", "/valid"]
 
-load_path_melanomas = "../bases/PH2_original/melanomas"
-load_path_normais = "../bases/PH2_original/normais"
+load_path_melanomas = "../../../ISIC_2016/melanomas"
+load_path_normais = "../../../ISIC_2016/normais"
 
 img_melanomas = os.listdir(load_path_melanomas)
 img_normais = os.listdir(load_path_normais)
 
-base_size = 200
-base_size_m = 40
-base_size_n = 160
+base_size = 900
+base_size_m = 173
+base_size_n = 727
 train_split_size = 0.6
-test_split_size = 0.3
-valid_split_size = 0.1
+test_split_size = 0.2
+valid_split_size = 0.2
 
-base = "../bases/" + str(int(train_split_size * 100)) + "_" + str(int(valid_split_size * 100)) + "_" + str(int(test_split_size * 100))
+base = "../bases/ISIC_2016/" + str(int(train_split_size * 100)) + "_" + str(int(valid_split_size * 100)) + "_" + str(int(test_split_size * 100))
 
 os.mkdir(base) #cria a pasta para armazenar os splits
 
-for split in range(0, 5):
-	path = base + "/split"+str(split+1)
-	os.mkdir(path)
-	#criando pastas
-	for pasta in pastas:
-		sub_path = path + pasta
-		os.mkdir(sub_path)
-		path_n = sub_path + "/normais" #criando pasta de normais
-		path_m = sub_path + "/melanomas" #criando pasta de melanomas
-		os.mkdir(path_m)
-		os.mkdir(path_n)
-		random.shuffle(img_melanomas)
-		random.shuffle(img_normais)
-		if pasta == '/test':
-			num_m = base_size_m * test_split_size
-			num_n = base_size_n * test_split_size
-		elif pasta == '/valid':
-			num_m = base_size_m * valid_split_size
-			num_n = base_size_n * valid_split_size 
-		else:
-			num_m = base_size_m * train_split_size
-			num_n = base_size_n * train_split_size
-		
-		#melanomas
-		for i in range(0, int(num_m)):
-			shutil.copy(load_path_melanomas + "/" + img_melanomas[i], path_m)
-		#normais
-		for i in range(0, int(num_n)):
-			shutil.copy(load_path_normais + "/" + img_normais[i], path_n)
+randomSelec(base, pastas, 5, train_split_size, test_split_size, valid_split_size)
 
 datagen = ImageDataGenerator(
 	shear_range=0.02,
@@ -78,4 +95,4 @@ for i in range(0, 5):
 		for batch in datagen.flow(x, save_prefix=filename1, save_to_dir=save_path, save_format='jpeg'):
 			i += 1
 			if i > 2:
-				break 
+				break
