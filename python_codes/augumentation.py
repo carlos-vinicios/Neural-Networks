@@ -5,9 +5,9 @@ import shutil
 import os
 
 def randomSelec(base, pastas, qtd_splits, train_split_size, test_split_size, valid_split_size):
-	total_m = 0
-	total_n = 0
 	for split in range(0, qtd_splits):
+		total_m = 0
+		total_n = 0
 		path = base + "/split"+str(split+1)
 		os.mkdir(path)
 		#criando pastas
