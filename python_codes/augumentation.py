@@ -51,8 +51,8 @@ def randomSelec(base, pastas, qtd_splits, train_split_size, test_split_size, val
 
 pastas = ["/test", "/train", "/valid"]
 
-load_path_melanomas = "../../../ISIC_2016/melanomas"
-load_path_normais = "../../../ISIC_2016/normais"
+load_path_melanomas = "../../../Bases (LabMint Drive)/ISIC_2016_s_size/melanomas"
+load_path_normais = "../../../Bases (LabMint Drive)/ISIC_2016_s_size/normais"
 
 img_melanomas = os.listdir(load_path_melanomas)
 img_normais = os.listdir(load_path_normais)
@@ -60,11 +60,11 @@ img_normais = os.listdir(load_path_normais)
 base_size = 900
 base_size_m = 173
 base_size_n = 727
-train_split_size = 0.6
-test_split_size = 0.2
-valid_split_size = 0.2
+train_split_size = 0.8
+test_split_size = 0.1
+valid_split_size = 0.1
 
-base = "../bases/ISIC_2016/" + str(int(train_split_size * 100)) + "_" + str(int(valid_split_size * 100)) + "_" + str(int(test_split_size * 100))
+base = "../../../" + str(int(train_split_size * 100)) + "_" + str(int(valid_split_size * 100)) + "_" + str(int(test_split_size * 100))
 
 os.mkdir(base) #cria a pasta para armazenar os splits
 
