@@ -1,4 +1,4 @@
-import matplotlib as plt
+from matplotlib import pyplot as plt
 import numpy as np
 import random
 import shutil
@@ -29,17 +29,58 @@ def images_mean_witdth_height(base_path):
 
     return width/count, height/count
 
+def create_mask(img):
+    kernel = np.ones((3,3), np.uint8)
+
+    #utilizando o morphologyEx e blur
+    closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=2)
+    blur = cv2.blur(closing,(15,15))
+    
+    #binarização da imagem
+    gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
+    _, mask = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    
+    #Preenche os quatro cantos da imagem binária
+    w, h = mask.shape[::-1]
+    cv2.floodFill(mask, None, (0, 0), 0)
+    cv2.floodFill(mask, None, (w-1, 0), 0)
+    cv2.floodFill(mask, None, (0, h-1), 0)
+    cv2.floodFill(mask, None, (w-1, h-1), 0) 
+
+    #lógica AND para obter da imagem original a encontrada pela criação do mask
+    img = cv2.bitwise_and(img, img, mask=mask)
+
+    #Canny Edges
+    edges = cv2.Canny(img, 100,200)
+    dilate = cv2.dilate(edges,kernel,iterations=1)
+    dilate = cv2.bitwise_not(dilate)
+
+    #Lógica OR para retirar da imagem original os pêlos encontrados
+    img = cv2.bitwise_or(img, img, mask=dilate )
+    
+    #Interpolação da imagem para preencher os vazios
+    dilate = cv2.bitwise_not(dilate)
+    inpaint = cv2.inpaint(img, dilate, 3,cv2.INPAINT_TELEA)
+    
+    return inpaint
+
 def image_rois(path_image, path_segment, save_path):
     images = sorted(os.listdir(path_image))
     masks = sorted(os.listdir(path_segment))
-    for image, mask in zip(images, masks):
+    for image in images:
+        msk = None
         img = cv2.imread(path_image + image)
-        msk = cv2.imread(path_segment + mask)
-        res = cv2.bitwise_and(img, msk, img) #READ ABOUT BITWISE
+        for mask in masks:
+            if image[:-5] in mask:
+                if "expert" in mask:
+                    msk = cv2.imread(path_segment + mask)
+                    break
+        if msk is None:
+            res = create_mask(img)                
+        else:
+            res = cv2.bitwise_and(img, msk, img)
         cv2.imwrite(save_path + image, res)
-
-
-#def apply_rois_base(base_path_normais, base_path_melanomas, save_path_normais, save_path_melanomas):
+        print("Imagem salva: " + image)
 
 def normalize_base_sizes(base_path_normais, base_path_melanomas, save_path_normais, save_path_melanomas):
     mean_w_n, mean_h_n = images_mean_witdth_height(base_path_normais)
@@ -60,15 +101,16 @@ def normalize_base_sizes(base_path_normais, base_path_melanomas, save_path_norma
     images_resize(base_path_normais, save_path_normais, width, height)
 
 
-base_path_melanomas = "../../../Bases ISIC/Archive/melanomas/"
-base_path_melanomas_segment = "../../../Bases ISIC/Archive/melanomas_seg/"
+base_dir = "1000melanomas_normais"
 
-base_path_normais = "../../../Bases ISIC/Archive/normais/"
-base_path_normais_segment = "../../../Bases ISIC/Archive/normais_seg/"
+base_path_melanomas = "../../../Bases ISIC/"+ base_dir +"/Archive/melanomas/"
+base_path_melanomas_segment = "../../../Bases ISIC/"+ base_dir +"/Archive/melanomas_seg/"
 
-save_path_melanomas = "../../../Bases ISIC/Archive_rois/melanomas/"
-save_path_normais = "../../../Bases ISIC/Archive_rois/normais/"
+base_path_normais = "../../../Bases ISIC/"+ base_dir +"/Archive/normais/"
+base_path_normais_segment = "../../../Bases ISIC/"+ base_dir +"/Archive/normais_seg/"
 
+save_path_melanomas = "../../../Bases ISIC/"+ base_dir +"/Archive_rois/melanomas/"
+save_path_normais = "../../../Bases ISIC/"+ base_dir +"/Archive_rois/normais/"
 
-image_rois(path_image=base_path_normais, path_segment=base_path_normais_segment, save_path=save_path_normais)
-image_rois(path_image=base_path_melanomas, path_segment=base_path_melanomas_segment, save_path=save_path_melanomas)
+#image_rois(path_image=base_path_normais, path_segment=base_path_normais_segment, save_path=save_path_normais)
+#image_rois(path_image=base_path_melanomas, path_segment=base_path_melanomas_segment, save_path=save_path_melanomas)
