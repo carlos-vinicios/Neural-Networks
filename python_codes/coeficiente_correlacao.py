@@ -16,8 +16,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 		length      - Optional  : character length of bar (Int)
 		fill        - Optional  : bar fill character (Str)
 	"""
-	print()
-	print()
+	
 	percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
 	filledLength = int(length * iteration // total)
 	bar = fill * filledLength + '-' * (length - filledLength)
@@ -42,7 +41,7 @@ for i in range(len(titles)):
 line = 1
 
 iteration = 0
-total_iter = len(os.listdir(base_path_melanomas)) + len(os.listdir(base_path_normais))
+total_iter = len(os.listdir(base_path_melanomas)) * len(os.listdir(base_path_normais))
 printProgressBar(iteration, total_iter, prefix = 'Progress:', suffix = 'Complete', length = 50)
 iteration+=1
 
