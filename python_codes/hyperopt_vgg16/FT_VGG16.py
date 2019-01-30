@@ -174,25 +174,25 @@ def build_and_train(hype_space):
     #fim da fase de treino
     
     #fase de teste
-    if hype_space['classification'] == 'sigmoid':
-        labels = [] #classes correspondente das imagens
-        for i in range(0, test_samples): #separação das imagens para teste da rede
-            test_img, test_label = next(test_gen)
-            labels.append(int(test_label))
+    labels = [] #classes correspondente das imagens
+    for i in range(0, test_samples): #separação das imagens para teste da rede
+        test_img, test_label = next(test_gen)
+        labels.append(int(test_label))
     
-        preds = model_final.predict_generator(test_gen, test_samples) #realiza o teste de classificação das imagens na rede
-    
+    preds = model_final.predict_generator(test_gen, test_samples) #realiza o teste de classificação das imagens na rede
+
+    if hype_space['classification'] == 'sigmoid':    
         preds_rounded = []
         for pred in preds: #adiciona os valores arredondados no vetor
             if (pred > .5):
                 preds_rounded.append(1)
             else:
-                preds_rounded.append(0)
-        
-        acc = metrics.accuracy_score(labels, preds_rounded) #calcula o acurácia
-        class_report = metrics.classification_report(labels, preds_rounded)
+                preds_rounded.append(0)    
     elif hype_space['classification'] == 'softmax':
-        acc = metrics.accuracy_score(labels, preds_rounded) #calcula o acurácia
+        preds_rounded = np.round(preds[:,0])
+
+    acc = metrics.accuracy_score(labels, preds_rounded) #calcula o acurácia
+    class_report = metrics.classification_report(labels, preds_rounded)
 
     model_name = "model_{}_{}".format(str(acc), str(uuid.uuid4())[:5])
 
