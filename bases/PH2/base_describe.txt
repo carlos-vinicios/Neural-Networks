@@ -1,0 +1,9 @@
+Base original: PH2
+
+Os labels das pastas correspondem a divisião dos splits, em relação a base original, contidos nela. Sendo exemplificado da seguinte forma:
+
+%treino_%validação_%teste.
+
+Logo a pasta com 80_10_10 equivale a: 80% das imagens para treino, 10% das imagens para validação e 10% das imagens para teste.
+
+Foi realizado um augmentation para normalizar a classe que possui menor quantidade de amostras, no caso a de melanomas.

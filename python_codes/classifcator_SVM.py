@@ -14,6 +14,9 @@ x, y = load_svm(file)
 
 split_test_size = 0.30
 
+print(x.shape)
+print(y.shape)
+
 for i in range(0, 5):
     X_treino, X_teste, Y_treino, Y_teste = train_test_split(x, y, test_size=split_test_size, random_state=42)
 
