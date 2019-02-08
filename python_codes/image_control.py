@@ -171,6 +171,12 @@ def randomSelec(base, qtd_splits, train_split_size, test_split_size, valid_split
 		path = base + "/split"+str(split+1)
 		os.mkdir(path)
     	#criando pastas
+		random.shuffle(img_melanomas)
+		random.shuffle(img_normais)
+		init_m = 0
+		final_m = 0
+		init_n = 0
+		final_n = 0
 		for pasta in pastas:
 			sub_path = path + pasta
 			os.mkdir(sub_path)
@@ -178,8 +184,6 @@ def randomSelec(base, qtd_splits, train_split_size, test_split_size, valid_split
 			path_m = sub_path + "/melanomas" #criando pasta de melanomas
 			os.mkdir(path_m)
 			os.mkdir(path_n)
-			random.shuffle(img_melanomas)
-			random.shuffle(img_normais)
 			if pasta == '/train':
 				num_m = round(base_size_m * train_split_size)
 				num_n = round(base_size_n * train_split_size)
@@ -199,17 +203,20 @@ def randomSelec(base, qtd_splits, train_split_size, test_split_size, valid_split
 				total_n+=num_n
 				num_m += base_size_m-total_m
 				num_n += base_size_n-total_n 
-
 			#melanomas
-			for i in range(0, int(num_m)):
+			final_m = init_m + num_m
+			for i in range(init_m, final_m):
 				shutil.copy(load_path_melanomas + "/" + img_melanomas[i], path_m)
 				printProgressBar(iteration, total_iter, prefix = 'Progress:', suffix = 'Complete', length = 50)
 				iteration+=1
+			init_m = final_m
 			#normais
-			for i in range(0, int(num_n)):
+			final_n = init_n + num_n
+			for i in range(init_n, final_n):
 				shutil.copy(load_path_normais + "/" + img_normais[i], path_n)
 				printProgressBar(iteration, total_iter, prefix = 'Progress:', suffix = 'Complete', length = 50)
 				iteration+=1
+			init_n = final_n
   
 	aug = input("Realizar augmentation? (Y|n)")
 	if aug == "y" or aug == "Y":
