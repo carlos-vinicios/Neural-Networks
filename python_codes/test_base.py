@@ -1,6 +1,6 @@
 import os
 
-bases_dir = '../../../80_10_10/'
+bases_dir = '../../../80_10_10_ISIC_2016/'
 
 for split in range(1, 6):
       print("Split: " + str(split))
